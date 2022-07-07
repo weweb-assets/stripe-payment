@@ -1,5 +1,7 @@
 <template>
-    <div v-if="stripe" ref="stripe-element"></div>
+    <div v-if="stripe" ref="ww-stripe-element">
+        <!--Stripe.js injects the Payment Element-->
+    </div>
     <!-- wwEditor:start -->
     <div v-else class="stripe__error label-2">Invalid Stripe configuration</div>
     <!-- wwEditor:end -->
@@ -17,11 +19,32 @@ export default {
         },
     },
     watch: {
-        'content.clientSecret'() {
-            if (!this.content.clientSecret) return;
-            const elements = wwLib.wwPlugins.stripe.instance.elements({ clientSecret: this.content.clientSecret });
-            const paymentElement = elements.create('payment');
-            paymentElement.mount(this.$refs['stripe-element']);
+        'content.clientSecret': {
+            immediate: true,
+            handler() {
+                this.mount();
+            },
+        },
+        stripe: {
+            immediate: true,
+            handler() {
+                // this.mount();
+            },
+        },
+    },
+    methods: {
+        mount() {
+            if (!this.content.clientSecret || !this.stripe) return;
+            this.$nextTick(() => {
+                const elements = wwLib.wwPlugins.stripe.instance.elements({
+                    theme: 'stripe',
+                    clientSecret: this.content.clientSecret,
+                });
+                const paymentElement = elements.create('payment');
+                console.log(this.$refs['ww-stripe-element']);
+                paymentElement.mount(this.$refs['ww-stripe-element']);
+                console.log('mount');
+            });
         },
     },
 };
