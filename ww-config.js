@@ -3,5 +3,14 @@ export default {
         label: 'Stripe - Element',
         icon: 'stripe',
     },
-    properties: {},
+    properties: {
+        clientSecret: {
+            label: 'Client secret',
+            type: 'Text',
+            options: { placeholder: 'pi_********' },
+            bindable: true,
+            defaultValue: '',
+            section: 'settings',
+        },
+    },
 };
