@@ -2,30 +2,8 @@ export default {
     editor: {
         label: 'Stripe - Element',
         icon: 'stripe',
-        bubble: { icon: 'stripe' },
-        workflowHint: () => {
-            const currentEl = wwLib.wwUtils.getSelectedComponent();
-            if (!currentEl) return false;
-            const hasSubmitBtn = currentEl.querySelector('[data-ww-flag="btn-submit"]');
-            if (hasSubmitBtn) return false;
-            return {
-                type: 'warning',
-                header: 'Submit button missing!',
-                text: 'The stripe element requires a button with type submit to use the "on submit" trigger.',
-            };
-        },
     },
-    triggerEvents: [{ name: 'submit', label: { en: 'On submit' } }],
-
     properties: {
-        topContent: {
-            hidden: true,
-            defaultValue: [],
-        },
-        bottomContent: {
-            hidden: true,
-            defaultValue: [],
-        },
         labels: {
             label: 'Labels',
             type: 'TextSelect',
@@ -110,19 +88,6 @@ export default {
             options: { placeholder: 'pi_********' },
             bindable: true,
             defaultValue: '',
-            section: 'settings',
-        },
-        redirectTo: {
-            label: 'Redirect to',
-            type: 'TextSelect',
-            options: () => ({
-                options: wwLib.wwWebsiteData.getPages().map(page => ({
-                    label: page.name,
-                    value: page.id,
-                    default: wwLib.wwWebsiteData.getInfo().homePageId === page.id,
-                })),
-            }),
-            bindable: true,
             section: 'settings',
         },
     },

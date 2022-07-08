@@ -1,43 +1,42 @@
 <template>
-    <form
-        :name="stripeElementName"
+    <div
+        ref="stripe-element"
+        v-show="stripe && content.clientSecret"
         class="stripe-element"
-        :class="{ editing: isEditing, selected: isSelected }"
-        data-ww-flag="form-container"
-        @submit.prevent="onSubmit"
+        :class="{ editing: isEditing }"
     >
-        <div class="stripe-element__relative">
-            <wwLayout class="stripe-element__content" path="topContent" />
-        </div>
-        <div ref="stripe-element" v-show="stripe && content.clientSecret" :class="{ editing: isEditing }">
-            <!--Stripe.js injects the Payment Element-->
-        </div>
-        <!-- wwEditor:start -->
-        <div v-if="!stripe && isEditing" class="stripe-element__error label-2">Invalid Stripe configuration</div>
-        <div v-else-if="!content.clientSecret && isEditing" class="stripe-element__error label-2">
-            No client secret defined
-        </div>
-        <!-- wwEditor:end -->
-        <div class="stripe-element__relative">
-            <wwLayout class="stripe-element__content" path="bottomContent" />
-        </div>
-    </form>
+        <!--Stripe.js injects the Payment Element-->
+    </div>
+    <!-- wwEditor:start -->
+    <div v-if="!stripe && isEditing" class="stripe-element__error label-2">Invalid Stripe configuration</div>
+    <div v-else-if="!content.clientSecret && isEditing" class="stripe-element__error label-2">
+        No client secret defined
+    </div>
+    <!-- wwEditor:end -->
 </template>
 
 <script>
 export default {
     props: {
+        uid: { type: String, required: true },
         content: { type: Object, required: true },
-        wwElementState: { type: Object, required: true },
         /* wwEditor:start */
         wwEditorState: { type: Object, required: true },
         /* wwEditor:end */
     },
-    emits: ['trigger-event'],
+    setup(props) {
+        const { value, setValue } = wwLib.wwVariable.useComponentVariable({
+            uid: props.uid,
+            name: 'value',
+            defaultValue: null,
+            componentType: 'element',
+            type: 'stripe',
+            readonly: true,
+        });
+        return { value, setValue };
+    },
     data() {
         return {
-            elements: null,
-            element: null,
             stripe: null,
         };
     },
@@ -48,19 +47,9 @@ export default {
         this.stripe = wwLib.getFrontWindow().Stripe(apiKey);
     },
     computed: {
-        stripeElementName() {
-            return this.wwElementState.name;
-        },
         isEditing() {
             /* wwEditor:start */
             return this.wwEditorState.editMode === wwLib.wwEditorHelper.EDIT_MODES.EDITION;
-            /* wwEditor:end */
-            // eslint-disable-next-line no-unreachable
-            return false;
-        },
-        isSelected() {
-            /* wwEditor:start */
-            return this.wwEditorState.isSelected;
             /* wwEditor:end */
             // eslint-disable-next-line no-unreachable
             return false;
@@ -91,18 +80,15 @@ export default {
         },
     },
     methods: {
-        onSubmit() {
-            this.$emit('trigger-event', { name: 'submit' });
-        },
         init() {
             this.$nextTick(() => {
-                if (!this.elements) this.createElement();
+                if (!this.value) this.createElement();
                 else this.updateElement();
             });
         },
         createElement() {
             if (!this.content.clientSecret || !this.stripe) return;
-            this.elements = this.stripe.elements({
+            const value = this.stripe.elements({
                 appearance: {
                     theme: this.content.theme,
                     labels: this.content.labels,
@@ -110,13 +96,14 @@ export default {
                 },
                 clientSecret: this.content.clientSecret,
             });
-            this.element = this.elements.create('payment');
-            this.element.mount(this.$refs['stripe-element']);
+            const element = value.create('payment');
+            element.mount(this.$refs['stripe-element']);
+            this.setValue(value);
+            console.log(value);
         },
         updateElement() {
             if (!this.content.clientSecret || !this.stripe) return;
-            console.log('updateElement');
-            this.elements.update({
+            this.value.update({
                 appearance: {
                     theme: this.content.theme,
                     labels: this.content.labels,
@@ -130,17 +117,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+/* wwEditor:start */
 .stripe-element {
-    &__relative {
-        position: relative;
-    }
-    &__content {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-    }
-    /* wwEditor:start */
-    .editing {
+    width: 100%;
+    &.editing {
         pointer-events: none;
     }
     &__error {
@@ -151,6 +131,6 @@ export default {
         text-align: center;
         border-radius: var(--ww-border-radius-00);
     }
-    /* wwEditor:end */
 }
+/* wwEditor:end */
 </style>
