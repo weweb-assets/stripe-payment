@@ -99,7 +99,6 @@ export default {
             const element = value.create('payment');
             element.mount(this.$refs['stripe-element']);
             this.setValue(value);
-            console.log(value);
         },
         updateElement() {
             if (!this.content.clientSecret || !this.stripe) return;
