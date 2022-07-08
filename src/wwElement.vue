@@ -1,18 +1,20 @@
 <template>
-    <div
-        ref="stripe-payment"
-        v-show="stripe && content.clientSecret"
-        class="stripe-payment"
-        :class="{ editing: isEditing }"
-    >
-        <!--Stripe.js injects the Payment Element-->
+    <div>
+        <div
+            ref="stripe-payment"
+            class="stripe-payment"
+            v-show="stripe && content.clientSecret"
+            :class="{ editing: isEditing }"
+        >
+            <!--Stripe.js injects the Payment Element-->
+        </div>
+        <!-- wwEditor:start -->
+        <div v-if="!stripe && isEditing" class="stripe-payment__error label-2">Invalid Stripe configuration</div>
+        <div v-else-if="!content.clientSecret && isEditing" class="stripe-payment__error label-2">
+            No client secret defined
+        </div>
+        <!-- wwEditor:end -->
     </div>
-    <!-- wwEditor:start -->
-    <div v-if="!stripe && isEditing" class="stripe-payment__error label-2">Invalid Stripe configuration</div>
-    <div v-else-if="!content.clientSecret && isEditing" class="stripe-payment__error label-2">
-        No client secret defined
-    </div>
-    <!-- wwEditor:end -->
 </template>
 
 <script>
