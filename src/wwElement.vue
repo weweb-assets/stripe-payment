@@ -1,15 +1,15 @@
 <template>
     <div
-        ref="stripe-element"
+        ref="stripe-payment"
         v-show="stripe && content.clientSecret"
-        class="stripe-element"
+        class="stripe-payment"
         :class="{ editing: isEditing }"
     >
         <!--Stripe.js injects the Payment Element-->
     </div>
     <!-- wwEditor:start -->
-    <div v-if="!stripe && isEditing" class="stripe-element__error label-2">Invalid Stripe configuration</div>
-    <div v-else-if="!content.clientSecret && isEditing" class="stripe-element__error label-2">
+    <div v-if="!stripe && isEditing" class="stripe-payment__error label-2">Invalid Stripe configuration</div>
+    <div v-else-if="!content.clientSecret && isEditing" class="stripe-payment__error label-2">
         No client secret defined
     </div>
     <!-- wwEditor:end -->
@@ -30,7 +30,7 @@ export default {
             name: 'value',
             defaultValue: null,
             componentType: 'element',
-            type: 'stripe',
+            type: 'stripe-payment',
             readonly: true,
         });
         return { value, setValue };
@@ -89,7 +89,7 @@ export default {
                 clientSecret: this.content.clientSecret,
             });
             const element = value.create('payment');
-            element.mount(this.$refs['stripe-element']);
+            element.mount(this.$refs['stripe-payment']);
             this.setValue(value);
         },
         updateElement() {
@@ -109,7 +109,7 @@ export default {
 
 <style lang="scss" scoped>
 /* wwEditor:start */
-.stripe-element {
+.stripe-payment {
     width: 100%;
     &.editing {
         pointer-events: none;

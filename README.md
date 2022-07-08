@@ -1,4 +1,4 @@
-# STRIPE-ELEMENT
+# STRIPE-PAYMENT
 
 This is a section for Weweb.
 

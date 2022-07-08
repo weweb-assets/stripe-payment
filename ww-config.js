@@ -1,6 +1,6 @@
 export default {
     editor: {
-        label: 'Stripe - Element',
+        label: 'Stripe - Payment',
         icon: 'stripe',
     },
     properties: {
