@@ -11,7 +11,7 @@ export default {
             return {
                 type: 'warning',
                 header: 'Submit button missing!',
-                text: 'A form container require a button with type submit to use the "on submit" trigger.',
+                text: 'The stripe element requires a button with type submit to use the "on submit" trigger.',
             };
         },
     },
