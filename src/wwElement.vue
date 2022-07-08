@@ -35,17 +35,6 @@ export default {
         });
         return { value, setValue };
     },
-    data() {
-        return {
-            stripe: null,
-        };
-    },
-    mounted() {
-        const apiKey = wwLib.manager
-            ? wwLib.wwPlugins.stripe.settings.publicData.publicTestApiKey
-            : wwLib.wwPlugins.stripe.settings.publicData.publicApiKey;
-        this.stripe = wwLib.getFrontWindow().Stripe(apiKey);
-    },
     computed: {
         isEditing() {
             /* wwEditor:start */
@@ -68,6 +57,9 @@ export default {
                 spacingUnit: this.content.spacingUnit,
                 borderRadius: this.content.borderRadius,
             };
+        },
+        stripe() {
+            return wwLib.wwPlugins.stripe && wwLib.wwPlugins.stripe.instance;
         },
     },
     watch: {
