@@ -3,6 +3,22 @@ export default {
         label: 'Stripe - Payment',
         icon: 'stripe',
     },
+    inherit: {
+        type: 'ww-text',
+        exclude: [
+            'text',
+            'font',
+            'lineHeight',
+            'textDecoration',
+            'textDecorationColor',
+            'textDecorationStyle',
+            'textAlign',
+            'textTransform',
+            'textShadow',
+            'letterSpacing',
+            'wordSpacing',
+        ],
+    },
     properties: {
         labels: {
             label: 'Labels',
@@ -23,6 +39,10 @@ export default {
                     { label: 'Stripe', value: 'stripe' },
                     { label: 'Night', value: 'night' },
                     { label: 'Flat', value: 'flat' },
+                    { label: 'Minimal', value: 'minimal' },
+                    { label: 'Bubblegum', value: 'bubblegum' },
+                    { label: 'Ninety Five', value: 'ninety-five' },
+                    { label: 'Dark Blue', value: 'dark-blue' },
                     { label: 'None', value: 'none' },
                 ],
             },
@@ -32,41 +52,16 @@ export default {
             label: 'Primary color',
             type: 'Color',
             options: { nullable: true },
-            hidden: content => content.theme !== 'none',
         },
         colorBackground: {
             label: 'Background color',
             type: 'Color',
             options: { nullable: true },
-            hidden: content => content.theme !== 'none',
-        },
-        colorText: {
-            label: 'Text color',
-            type: 'Color',
-            options: { nullable: true },
-            hidden: content => content.theme !== 'none',
         },
         colorDanger: {
             label: 'Danger color',
             type: 'Color',
             options: { nullable: true },
-        },
-        fontFamily: {
-            label: 'Font family',
-            type: 'FontFamily',
-        },
-        fontSizeBase: {
-            label: 'Font size',
-            type: 'Length',
-            options: {
-                unitChoices: [
-                    { value: 'px', label: 'px', min: 1, max: 100 },
-                    { value: 'em', label: 'em', min: 1, max: 10, digits: 2 },
-                    { value: 'rem', label: 'rem', min: 1, max: 10, digits: 2 },
-                ],
-            },
-            responsive: true,
-            defaultValue: '16px',
         },
         borderRadius: {
             label: 'Border radius',
@@ -82,8 +77,14 @@ export default {
             defaultValue: '4px',
             responsive: true,
         },
+        rules: {
+            label: 'Custom Rules',
+            type: 'Text',
+            options: { placeholder: '{ }' },
+            defaultValue: '',
+        },
         clientSecret: {
-            label: 'Client secret',
+            label: 'Client secret (Payment intent)',
             type: 'Text',
             options: { placeholder: 'pi_********' },
             bindable: true,
