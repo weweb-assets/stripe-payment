@@ -82,6 +82,7 @@ export default {
             type: 'Text',
             options: { placeholder: '{ }' },
             defaultValue: '',
+            responsive: true,
         },
         clientSecret: {
             label: 'Client secret (Payment intent)',

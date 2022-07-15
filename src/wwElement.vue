@@ -18,6 +18,8 @@
 </template>
 
 <script>
+import { markRaw } from 'vue';
+
 export default {
     props: {
         uid: { type: String, required: true },
@@ -88,15 +90,28 @@ export default {
         stripe() {
             return wwLib.wwPlugins.stripe && wwLib.wwPlugins.stripe.instance;
         },
+        stripeOptions() {
+            return {
+                appearance: {
+                    theme: this.theme,
+                    labels: this.content.labels,
+                    variables: this.variables,
+                    rules: this.rules,
+                },
+                clientSecret: this.content.clientSecret,
+            };
+        },
     },
     watch: {
-        content: {
-            immediate: true,
+        stripeOptions: {
             deep: true,
             handler() {
                 this.init();
             },
         },
+    },
+    mounted() {
+        this.init();
     },
     methods: {
         init() {
@@ -107,30 +122,14 @@ export default {
         },
         createElement() {
             if (!this.content.clientSecret || !this.stripe) return;
-            const value = this.stripe.elements({
-                appearance: {
-                    theme: this.theme,
-                    labels: this.content.labels,
-                    variables: this.variables,
-                    rules: this.rules,
-                },
-                clientSecret: this.content.clientSecret,
-            });
-            const element = value.create('payment');
+            const stripeElements = markRaw(this.stripe.elements(this.stripeOptions));
+            const element = stripeElements.create('payment');
             element.mount(this.$refs['stripe-payment']);
-            this.setValue(value);
+            this.setValue(stripeElements);
         },
         updateElement() {
             if (!this.content.clientSecret || !this.stripe) return;
-            this.value.update({
-                appearance: {
-                    theme: this.theme,
-                    labels: this.content.labels,
-                    variables: this.variables,
-                    rules: this.rules,
-                },
-                clientSecret: this.content.clientSecret,
-            });
+            this.value.update(this.stripeOptions);
         },
     },
 };
