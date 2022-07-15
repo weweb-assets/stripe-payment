@@ -19,7 +19,7 @@
 
 <script>
 import { markRaw } from 'vue';
-import { THEME_DEFAULT } from './constants.js';
+import CONSTANTS from './constants.js';
 
 export default {
     props: {
@@ -53,7 +53,7 @@ export default {
         },
         variables() {
             return {
-                ...(THEME_DEFAULT[this.content.theme].variables || {}),
+                ...(CONSTANTS.THEME_DEFAULT[this.content.theme].variables || {}),
                 colorPrimary: this.content.colorPrimary,
                 colorBackground: this.content.colorBackground,
                 colorDanger: this.content.colorDanger,
@@ -81,11 +81,11 @@ export default {
         rules() {
             try {
                 return {
-                    ...(THEME_DEFAULT[this.content.theme].rules || {}),
+                    ...(CONSTANTS.THEME_DEFAULT[this.content.theme].rules || {}),
                     ...(eval(`(function() { return  ${this.content.rules} })`)() || {}),
                 };
             } catch {
-                return { ...(THEME_DEFAULT[this.content.theme].rules || {}) };
+                return { ...(CONSTANTS.THEME_DEFAULT[this.content.theme].rules || {}) };
             }
         },
         stripe() {
