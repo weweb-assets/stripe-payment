@@ -37,6 +37,7 @@ export default {
             componentType: 'element',
             type: 'stripe-payment',
             readonly: true,
+            labelOnly: '[Stripe Element]'
         });
         return { value, setValue };
     },
