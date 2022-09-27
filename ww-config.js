@@ -91,6 +91,12 @@ export default {
             bindable: true,
             defaultValue: '',
             section: 'settings',
+            /* wwEditor:start */
+            bindingValidation: {
+                type: 'string',
+                tooltip: 'A string that defines the Client secret: `"pi_********"`',
+            },
+            /* wwEditor:end */
         },
     },
 };
