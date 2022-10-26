@@ -1,7 +1,7 @@
 export default {
     editor: {
         label: 'Stripe - Payment',
-        icon: 'stripe',
+        icon: 'logos/stripe',
     },
     inherit: {
         type: 'ww-text',
