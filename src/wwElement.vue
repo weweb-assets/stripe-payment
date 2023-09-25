@@ -118,7 +118,7 @@ export default {
     methods: {
         init() {
             this.$nextTick(() => {
-                if (!this.contet.clientSecret) return;
+                if (!this.content.clientSecret) return;
                 if (!this.value) this.createElement();
                 else this.updateElement();
             });
