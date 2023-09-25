@@ -135,14 +135,6 @@ export default {
     &.editing {
         pointer-events: none;
     }
-    &__error {
-        padding: var(--ww-spacing-02);
-        color: var(--ww-color-red-500);
-        background-color: var(--ww-color-theme-dark-50);
-        border: 1px solid var(--ww-color-theme-dark-100);
-        text-align: center;
-        border-radius: var(--ww-border-radius-00);
-    }
     /* wwEditor:end */
 }
 </style>
