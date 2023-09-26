@@ -32,7 +32,7 @@ export default {
             return wwLib.wwPlugins.stripe && wwLib.wwPlugins.stripe.instance;
         },
         showStripePayment() {
-            return !window.__WW_IS_PRERENDER__ && stripe && content.clientSecret;
+            return !window.__WW_IS_PRERENDER__ && this.stripe && this.content.clientSecret;
         }
     },
 };
