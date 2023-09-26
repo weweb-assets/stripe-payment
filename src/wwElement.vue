@@ -1,6 +1,6 @@
 <template>
     <div>
-        <StripePayment v-if="stripe && content.clientSecret" :uid="uid" :content="content" :wwEditorState="wwEditorState"/>
+        <StripePayment v-if="showStripePayment" :uid="uid" :content="content" :wwEditorState="wwEditorState"/>
         <!-- wwEditor:start -->
         <div v-else-if="!stripe && isEditing" class="stripe-payment__error label-2">Invalid Stripe configuration</div>
         <div v-else-if="!content.clientSecret && isEditing" class="stripe-payment__error label-2">
@@ -28,9 +28,9 @@ export default {
             return this.wwEditorState.editMode === wwLib.wwEditorHelper.EDIT_MODES.EDITION;
         },
         /* wwEditor:end */
-        stripe() {
-            return wwLib.wwPlugins.stripe && wwLib.wwPlugins.stripe.instance;
-        },
+        showStripePayment() {
+            return !window.__WW_IS_PRERENDER__ && wwLib.wwPlugins.stripe && wwLib.wwPlugins.stripe.instance && content.clientSecret;
+        }
     },
 };
 </script>
