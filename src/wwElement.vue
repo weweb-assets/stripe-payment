@@ -28,8 +28,11 @@ export default {
             return this.wwEditorState.editMode === wwLib.wwEditorHelper.EDIT_MODES.EDITION;
         },
         /* wwEditor:end */
+        stripe() {
+            return wwLib.wwPlugins.stripe && wwLib.wwPlugins.stripe.instance;
+        },
         showStripePayment() {
-            return wwLib.wwPlugins.stripe && wwLib.wwPlugins.stripe.instance && content.clientSecret;
+            return !window.__WW_IS_PRERENDER__ && stripe && content.clientSecret;
         }
     },
 };
