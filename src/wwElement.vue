@@ -29,7 +29,7 @@ export default {
         },
         /* wwEditor:end */
         showStripePayment() {
-            return !window.__WW_IS_PRERENDER__ && wwLib.wwPlugins.stripe && wwLib.wwPlugins.stripe.instance && content.clientSecret;
+            return wwLib.wwPlugins.stripe && wwLib.wwPlugins.stripe.instance && content.clientSecret;
         }
     },
 };
