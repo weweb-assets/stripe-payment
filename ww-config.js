@@ -19,6 +19,7 @@ export default {
             'wordSpacing',
         ],
     },
+    triggerEvents: [{ name: 'submit', label: { en: 'On submit' }, default: true }],
     properties: {
         labels: {
             label: 'Labels',
