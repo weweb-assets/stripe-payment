@@ -1,9 +1,9 @@
 <template>
-    <div>
+    <div :key="componentKey">
         <div
             ref="stripe-payment"
             class="stripe-payment"
-            v-show="stripe && content.clientSecret"
+            v-if="stripe && content.clientSecret"
             :class="{ editing: isEditing }"
         >
             <!--Stripe.js injects the Payment Element-->
@@ -37,9 +37,14 @@ export default {
             componentType: 'element',
             type: 'stripe-payment',
             readonly: true,
-            labelOnly: '[Stripe Element]'
+            labelOnly: '[Stripe Element]',
         });
         return { value, setValue };
+    },
+    data() {
+        return {
+            componentKey: 0,
+        };
     },
     computed: {
         isEditing() {
@@ -108,8 +113,13 @@ export default {
         stripeOptions: {
             deep: true,
             handler() {
+                this.componentKey++;
                 this.init();
             },
+        },
+        stripe() {
+            this.componentKey++;
+            this.init();
         },
     },
     mounted() {
