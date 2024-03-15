@@ -1,15 +1,17 @@
 <template>
-    <div :key="componentKey">
+    <div>
         <div
+            v-if="isStripeLoaded && content.clientSecret"
             ref="stripe-payment"
             class="stripe-payment"
-            v-if="stripe && content.clientSecret"
             :class="{ editing: isEditing }"
         >
             <!--Stripe.js injects the Payment Element-->
         </div>
         <!-- wwEditor:start -->
-        <div v-if="!stripe && isEditing" class="stripe-payment__error label-2">Invalid Stripe configuration</div>
+        <div v-if="!isStripeLoaded && !isEditing" class="stripe-payment__error label-2">
+            Invalid Stripe configuration
+        </div>
         <div v-else-if="!content.clientSecret && isEditing" class="stripe-payment__error label-2">
             No client secret defined
         </div>
@@ -41,11 +43,6 @@ export default {
         });
         return { value, setValue };
     },
-    data() {
-        return {
-            componentKey: 0,
-        };
-    },
     computed: {
         isEditing() {
             /* wwEditor:start */
@@ -71,6 +68,9 @@ export default {
                 borderRadius: this.content.borderRadius,
             };
         },
+        isStripeLoaded() {
+            return !!wwLib.wwPlugins.stripe?.instance;
+        },
         theme() {
             switch (this.content.theme) {
                 case 'minimal':
@@ -94,9 +94,6 @@ export default {
                 return { ...(CONSTANTS.THEME_DEFAULT[this.content.theme].rules || {}) };
             }
         },
-        stripe() {
-            return wwLib.wwPlugins.stripe && wwLib.wwPlugins.stripe.instance;
-        },
         stripeOptions() {
             return {
                 appearance: {
@@ -111,19 +108,13 @@ export default {
     },
     watch: {
         stripeOptions: {
+            immediate: true,
             deep: true,
             handler() {
-                this.componentKey++;
+                if (!this.content.clientSecret || !wwLib.wwPlugins.stripe?.instance) return;
                 this.init();
             },
         },
-        stripe() {
-            this.componentKey++;
-            this.init();
-        },
-    },
-    mounted() {
-        this.init();
     },
     methods: {
         init() {
@@ -133,14 +124,16 @@ export default {
             });
         },
         createElement() {
-            if (!this.content.clientSecret || !this.stripe) return;
-            const stripeElements = markRaw(this.stripe.elements(this.stripeOptions));
+            const stripe = wwLib.wwPlugins.stripe?.instance;
+            if (!this.content.clientSecret || !stripe) return;
+            this.$refs['stripe-payment'].innerHTML = '';
+            const stripeElements = markRaw(stripe.elements(this.stripeOptions));
             const element = stripeElements.create('payment');
             element.mount(this.$refs['stripe-payment']);
             this.setValue(stripeElements);
         },
         updateElement() {
-            if (!this.content.clientSecret || !this.stripe) return;
+            if (!this.content.clientSecret || !wwLib.wwPlugins.stripe?.instance) return;
             this.value.update(this.stripeOptions);
         },
     },
