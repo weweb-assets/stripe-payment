@@ -1,11 +1,8 @@
 <template>
     <div>
-        <div
-            v-if="isStripeLoaded && content.clientSecret"
-            ref="stripe-payment"
-            class="stripe-payment"
-            :class="{ editing: isEditing }"
-        >
+        isStripeLoaded: {{ isStripeLoaded }} <br />
+        content.clientSecret: {{ content.clientSecret }}
+        <div v-if="content.clientSecret" ref="stripe-payment" class="stripe-payment" :class="{ editing: isEditing }">
             <!--Stripe.js injects the Payment Element-->
         </div>
         <!-- wwEditor:start -->
