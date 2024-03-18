@@ -1,7 +1,7 @@
 <template>
     <div>
         <div
-            v-if="!isStripeLoaded && content.clientSecret"
+            v-if="isStripeLoaded && content.clientSecret"
             ref="stripe-payment"
             class="stripe-payment"
             :class="{ editing: isEditing }"
