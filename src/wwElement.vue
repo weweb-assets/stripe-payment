@@ -128,10 +128,13 @@ export default {
         },
         createElement() {
             const stripe = wwLib.wwPlugins.stripe?.instance;
-            if (!this.content.clientSecret || !stripe || !this.isStripeLoaded) return;
+            console.log('createElement 1', stipe);
+            if (!this.content.clientSecret || !stripe) return;
             const stripeElements = markRaw(stripe.elements(this.stripeOptions));
             const element = stripeElements.create('payment');
+            console.log('createElement 2', stripeElements, element);
             element.mount(this.$refs['stripe-payment']);
+            console.log('createElement 3', element);
             this.setValue(stripeElements);
         },
         updateElement() {
