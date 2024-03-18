@@ -1,14 +1,15 @@
 <template>
     <div>
-        isStripeLoaded: {{ isStripeLoaded }} <br />
-        content.clientSecret: {{ content.clientSecret }}
-        <div v-if="content.clientSecret" ref="stripe-payment" class="stripe-payment" :class="{ editing: isEditing }">
+        <div
+            v-if="!!stripe && content.clientSecret"
+            ref="stripe-payment"
+            class="stripe-payment"
+            :class="{ editing: isEditing }"
+        >
             <!--Stripe.js injects the Payment Element-->
         </div>
         <!-- wwEditor:start -->
-        <div v-if="!isStripeLoaded && !isEditing" class="stripe-payment__error label-2">
-            Invalid Stripe configuration
-        </div>
+        <div v-if="!!!stripe && !isEditing" class="stripe-payment__error label-2">Invalid Stripe configuration</div>
         <div v-else-if="!content.clientSecret && isEditing" class="stripe-payment__error label-2">
             No client secret defined
         </div>
@@ -65,8 +66,8 @@ export default {
                 borderRadius: this.content.borderRadius,
             };
         },
-        isStripeLoaded() {
-            return !!wwLib.wwPlugins.stripe?.instance;
+        stripe() {
+            return wwLib.wwPlugins.stripe?.instance.value;
         },
         theme() {
             switch (this.content.theme) {
@@ -107,16 +108,16 @@ export default {
         stripeOptions: {
             deep: true,
             handler() {
-                if (!this.content.clientSecret || !this.isStripeLoaded) return;
+                if (!this.content.clientSecret || !this.stripe) return;
                 this.init();
             },
         },
-        isStripeLoaded(value) {
+        stripe(value) {
             if (value) this.init();
         },
     },
     mounted() {
-        if (!this.content.clientSecret || !this.isStripeLoaded) return;
+        if (!this.content.clientSecret || !this.stripe) return;
         this.init();
     },
     methods: {
@@ -127,18 +128,14 @@ export default {
             });
         },
         createElement() {
-            const stripe = wwLib.wwPlugins.stripe?.instance;
-            console.log('createElement 1', stipe);
-            if (!this.content.clientSecret || !stripe) return;
-            const stripeElements = markRaw(stripe.elements(this.stripeOptions));
+            if (!this.content.clientSecret || !this.stripe) return;
+            const stripeElements = markRaw(this.stripe.elements(this.stripeOptions));
             const element = stripeElements.create('payment');
-            console.log('createElement 2', stripeElements, element);
             element.mount(this.$refs['stripe-payment']);
-            console.log('createElement 3', element);
             this.setValue(stripeElements);
         },
         updateElement() {
-            if (!this.content.clientSecret || !wwLib.wwPlugins.stripe?.instance) return;
+            if (!this.content.clientSecret || !this.stripe) return;
             this.value.update(this.stripeOptions);
         },
     },
@@ -147,6 +144,7 @@ export default {
 
 <style lang="scss" scoped>
 .stripe-payment {
+    border: 3px solid red;
     width: 100%;
     /* wwEditor:start */
     &.editing {
