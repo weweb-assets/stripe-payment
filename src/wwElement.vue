@@ -131,7 +131,6 @@ export default {
             if (!this.content.clientSecret || !stripe || !this.isStripeLoaded) return;
             const stripeElements = markRaw(stripe.elements(this.stripeOptions));
             const element = stripeElements.create('payment');
-            console.log('stripeElements', stripeElements, element);
             element.mount(this.$refs['stripe-payment']);
             this.setValue(stripeElements);
         },
