@@ -128,7 +128,7 @@ export default {
         },
         createElement() {
             const stripe = wwLib.wwPlugins.stripe?.instance;
-            if (!this.content.clientSecret || !stripe || !isStripeLoaded) return;
+            if (!this.content.clientSecret || !stripe || !this.isStripeLoaded) return;
             const stripeElements = markRaw(stripe.elements(this.stripeOptions));
             const element = stripeElements.create('payment');
             console.log('stripeElements', stripeElements, element);
