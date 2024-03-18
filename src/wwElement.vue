@@ -69,7 +69,7 @@ export default {
             };
         },
         stripe() {
-            return wwLib.wwPlugins.stripe?.instance.value;
+            return wwLib.wwPlugins.stripe?.instance;
         },
         isStripeLoaded() {
             return wwLib.wwPlugins.stripe?.isInstanceLoaded.value;
