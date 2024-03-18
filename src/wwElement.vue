@@ -144,7 +144,6 @@ export default {
 
 <style lang="scss" scoped>
 .stripe-payment {
-    border: 3px solid red;
     width: 100%;
     /* wwEditor:start */
     &.editing {
