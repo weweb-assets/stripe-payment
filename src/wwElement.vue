@@ -108,16 +108,19 @@ export default {
     },
     watch: {
         stripeOptions: {
-            immediate: true,
             deep: true,
             handler() {
-                if (!this.content.clientSecret || !wwLib.wwPlugins.stripe?.instance) return;
+                if (!this.content.clientSecret || !this.isStripeLoaded) return;
                 this.init();
             },
         },
         isStripeLoaded(value) {
             if (value) this.init();
         },
+    },
+    mounted() {
+        if (!this.content.clientSecret || !this.isStripeLoaded) return;
+        this.init();
     },
     methods: {
         init() {
