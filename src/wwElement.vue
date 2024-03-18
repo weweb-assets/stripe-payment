@@ -1,7 +1,7 @@
 <template>
     <div>
         <div
-            v-if="!!isStripeLoaded && content.clientSecret"
+            v-if="!isStripeLoaded && content.clientSecret"
             ref="stripe-payment"
             class="stripe-payment"
             :class="{ editing: isEditing }"
@@ -9,7 +9,7 @@
             <!--Stripe.js injects the Payment Element-->
         </div>
         <!-- wwEditor:start -->
-        <div v-if="!!!isStripeLoaded && !isEditing" class="stripe-payment__error label-2">
+        <div v-if="!isStripeLoaded && !isEditing" class="stripe-payment__error label-2">
             Invalid Stripe configuration
         </div>
         <div v-else-if="!content.clientSecret && isEditing" class="stripe-payment__error label-2">
