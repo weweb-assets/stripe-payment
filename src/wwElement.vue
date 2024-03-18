@@ -1,11 +1,6 @@
 <template>
     <div>
-        <div
-            v-if="isStripeLoaded && content.clientSecret"
-            ref="stripe-payment"
-            class="stripe-payment"
-            :class="{ editing: isEditing }"
-        >
+        <div v-if="content.clientSecret" ref="stripe-payment" class="stripe-payment" :class="{ editing: isEditing }">
             <!--Stripe.js injects the Payment Element-->
         </div>
         <!-- wwEditor:start -->
@@ -128,7 +123,6 @@ export default {
             if (!this.content.clientSecret || !stripe) return;
             const stripeElements = markRaw(stripe.elements(this.stripeOptions));
             const element = stripeElements.create('payment');
-            console.log('stripeElements', stripeElements, element);
             element.mount(this.$refs['stripe-payment']);
             this.setValue(stripeElements);
         },
