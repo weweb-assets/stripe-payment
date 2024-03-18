@@ -1,15 +1,17 @@
 <template>
     <div>
         <div
+            v-if="isStripeLoaded && content.clientSecret"
             ref="stripe-payment"
             class="stripe-payment"
-            v-show="stripe && content.clientSecret"
             :class="{ editing: isEditing }"
         >
             <!--Stripe.js injects the Payment Element-->
         </div>
         <!-- wwEditor:start -->
-        <div v-if="!stripe && isEditing" class="stripe-payment__error label-2">Invalid Stripe configuration</div>
+        <div v-if="!isStripeLoaded && !isEditing" class="stripe-payment__error label-2">
+            Invalid Stripe configuration
+        </div>
         <div v-else-if="!content.clientSecret && isEditing" class="stripe-payment__error label-2">
             No client secret defined
         </div>
@@ -37,7 +39,7 @@ export default {
             componentType: 'element',
             type: 'stripe-payment',
             readonly: true,
-            labelOnly: '[Stripe Element]'
+            labelOnly: '[Stripe Element]',
         });
         return { value, setValue };
     },
@@ -66,6 +68,12 @@ export default {
                 borderRadius: this.content.borderRadius,
             };
         },
+        stripe() {
+            return wwLib.wwPlugins.stripe?.instance;
+        },
+        isStripeLoaded() {
+            return wwLib.wwPlugins.stripe?.isInstanceLoaded.value;
+        },
         theme() {
             switch (this.content.theme) {
                 case 'minimal':
@@ -89,9 +97,6 @@ export default {
                 return { ...(CONSTANTS.THEME_DEFAULT[this.content.theme].rules || {}) };
             }
         },
-        stripe() {
-            return wwLib.wwPlugins.stripe && wwLib.wwPlugins.stripe.instance;
-        },
         stripeOptions() {
             return {
                 appearance: {
@@ -108,11 +113,16 @@ export default {
         stripeOptions: {
             deep: true,
             handler() {
+                if (!this.content.clientSecret || !this.isStripeLoaded) return;
                 this.init();
             },
         },
+        isStripeLoaded(value) {
+            if (value) this.init();
+        },
     },
     mounted() {
+        if (!this.content.clientSecret || !this.isStripeLoaded) return;
         this.init();
     },
     methods: {
@@ -123,14 +133,14 @@ export default {
             });
         },
         createElement() {
-            if (!this.content.clientSecret || !this.stripe) return;
+            if (!this.content.clientSecret || !this.isStripeLoaded) return;
             const stripeElements = markRaw(this.stripe.elements(this.stripeOptions));
             const element = stripeElements.create('payment');
             element.mount(this.$refs['stripe-payment']);
             this.setValue(stripeElements);
         },
         updateElement() {
-            if (!this.content.clientSecret || !this.stripe) return;
+            if (!this.content.clientSecret || !this.isStripeLoaded) return;
             this.value.update(this.stripeOptions);
         },
     },
