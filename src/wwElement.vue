@@ -1,7 +1,7 @@
 <template>
     <div>
         <div
-            v-if="!!stripe && content.clientSecret"
+            v-if="!!isStripeLoaded && content.clientSecret"
             ref="stripe-payment"
             class="stripe-payment"
             :class="{ editing: isEditing }"
@@ -9,7 +9,9 @@
             <!--Stripe.js injects the Payment Element-->
         </div>
         <!-- wwEditor:start -->
-        <div v-if="!!!stripe && !isEditing" class="stripe-payment__error label-2">Invalid Stripe configuration</div>
+        <div v-if="!!!isStripeLoaded && !isEditing" class="stripe-payment__error label-2">
+            Invalid Stripe configuration
+        </div>
         <div v-else-if="!content.clientSecret && isEditing" class="stripe-payment__error label-2">
             No client secret defined
         </div>
@@ -69,6 +71,9 @@ export default {
         stripe() {
             return wwLib.wwPlugins.stripe?.instance.value;
         },
+        isStripeLoaded() {
+            return wwLib.wwPlugins.stripe?.isInstanceLoaded.value;
+        },
         theme() {
             switch (this.content.theme) {
                 case 'minimal':
@@ -108,16 +113,16 @@ export default {
         stripeOptions: {
             deep: true,
             handler() {
-                if (!this.content.clientSecret || !this.stripe) return;
+                if (!this.content.clientSecret || !this.isStripeLoaded) return;
                 this.init();
             },
         },
-        stripe(value) {
+        isStripeLoaded(value) {
             if (value) this.init();
         },
     },
     mounted() {
-        if (!this.content.clientSecret || !this.stripe) return;
+        if (!this.content.clientSecret || !this.isStripeLoaded) return;
         this.init();
     },
     methods: {
@@ -128,14 +133,14 @@ export default {
             });
         },
         createElement() {
-            if (!this.content.clientSecret || !this.stripe) return;
+            if (!this.content.clientSecret || !this.isStripeLoaded) return;
             const stripeElements = markRaw(this.stripe.elements(this.stripeOptions));
             const element = stripeElements.create('payment');
             element.mount(this.$refs['stripe-payment']);
             this.setValue(stripeElements);
         },
         updateElement() {
-            if (!this.content.clientSecret || !this.stripe) return;
+            if (!this.content.clientSecret || !this.isStripeLoaded) return;
             this.value.update(this.stripeOptions);
         },
     },
