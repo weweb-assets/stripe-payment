@@ -89,9 +89,10 @@ export default {
         },
         rules() {
             try {
+                const customRulesFunction = new Function(`return ${this.content.rules}`);
                 return {
                     ...(CONSTANTS.THEME_DEFAULT[this.content.theme].rules || {}),
-                    ...(eval(`(function() { return  ${this.content.rules} })`)() || {}),
+                    ...(customRulesFunction() || {}),
                 };
             } catch {
                 return { ...(CONSTANTS.THEME_DEFAULT[this.content.theme].rules || {}) };
